@@ -1,12 +1,19 @@
 var express = require('express');
 var morgan = require('morgan');
 var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
 var TemperatureLogs = require('./models/temperature_logs');
 
 var hostname = 'localhost';
-var port = 8081;
+var port = 8082;
+var mongoUrl = 'mongodb://localhost:27017/temperature_logs'
 
-// TODO Connect to DB
+mongoose.connect(mongoUrl);
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function () {
+    console.log("Connected to MongoDB server");
+});
 
 var app = express();
 var router = express.Router();
@@ -27,6 +34,7 @@ router.route('/log')
 
     })
     .post(function (req, res, next) {
+        // The received log time should be in milliseconds since epoch
         TemperatureLogs.create(req.body, function (err, tlog) {
             if (err) throw err;
             console.log('Temperature Log created!');
