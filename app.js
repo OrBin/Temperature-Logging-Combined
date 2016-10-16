@@ -2,6 +2,9 @@ var express = require('express');
 var morgan = require('morgan');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var exphbs  = require('express-handlebars');
+var moment = require('moment');
+
 var TemperatureLogs = require('./models/temperature_logs');
 
 var hostname = 'localhost';
@@ -20,14 +23,61 @@ var router = express.Router();
 
 router.use(bodyParser.json());
 
-router.route('/')
-    .get(function (req, res, next) {
+var hbs = exphbs.create({
+    helpers: {
+        formatDate: function(timestamp) {
+            return moment(timestamp).format("DD/MM/YY HH:mm");//new Date(timestamp).toString();
+        }
+    }
 
+});
+
+app.engine('handlebars', hbs.engine);//({defaultLayout: 'main'}));
+app.set('view engine', 'handlebars');
+
+app.get('/', function (req, res) {
+
+
+    TemperatureLogs.aggregate([
+        // Sort content by createdAt
+        { "$sort": { "createdAt": -1 } },
+
+        // Group by logger_name and push all items, keeping first result
+        { "$group": {
+            "_id": "$logger_name",
+            "results": {
+                "$push": {
+                    "logger_display_name": "$logger_name",
+                    "humidity": "$humidity",
+                    "temperature": "$temperature_celsius",
+                    "heat_index": "$heat_index_celsius",
+                    "log_time": "$createdAt"
+                }
+            }
+        }},
+        { "$project": {
+            "results": { "$slice": [ "$results", 1 ] }
+        }}
+    ]).exec(function(err, data) {
+
+        var sensors_data = [].concat(data.map(function(element) {
+            return element.results[0];
+        }));
+
+        res.render('main',
+            { sensors: sensors_data });
     });
+});
+
+/*router.route('/')
+    .get(function (req, res, next) {
+        res.render('home');
+    });*/
 
 router.route('/log')
     .get(function (req, res, next) {
-        TemperatureLogs.find({}, function (err, tlog) {
+        // TODO iterative fetching
+        TemperatureLogs.find({}).limit(10000).exec(function (err, tlog) {
             if (err) throw err;
             res.json(tlog);
         });

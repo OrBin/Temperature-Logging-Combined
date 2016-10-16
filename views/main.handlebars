@@ -1,0 +1,43 @@
+<html>
+<head>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <link href='https://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+
+    <link rel="icon" type="image/png" href="thermometer1.png" />
+    <!-- Icon made by Freepik from www.flaticon.com -->
+
+    <title>Current temperature</title>
+</head>
+<body style="font-family: 'Oswald', sans-serif;">
+    <div style="height: 30px;"></div>
+    <table style="width: 100%">
+        <tr>
+            <td class="sides" style="width: 14%"></td>
+            {{#each sensors}}
+            <td class="box" style="width: 30%; padding-right: 3.5%; padding-left: 3.5%;">
+                <div class="well hero-unit">
+                    <hgroup style="text-align: center">
+                        <div style="font-size: 20px">{{{logger_display_name}}}:</div>
+                        <div style="font-size: 20px; margin-top: 10px; margin-bottom: -30px;">
+                            <i class="fa fa-tint" aria-hidden="true"></i> {{{humidity}}}&#37;
+                        </div>
+                        <div>
+                            <span style="font-size: 150px;">{{{temperature}}}&deg;</span>
+                            <span style="font-size: 40px; margin-left: -20px;">C</span>
+                        </div>
+                        <div style="font-size: 20px; margin-top: -20px; margin-bottom: 10px;">
+                            Feels like {{{heat_index}}}&degC
+                        </div>
+                        <div style="font-size: 20px">Last update: {{formatDate log_time}}</div>
+                    </hgroup>
+                </div>
+            </td>
+            {{/each}}
+            <td class="sides" style="width: 14%"></td>
+        </tr>
+    </table>
+</body>
+</html>
