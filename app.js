@@ -6,6 +6,7 @@ var exphbs  = require('express-handlebars');
 var moment = require('moment');
 
 var TemperatureLogs = require('./models/temperature_logs');
+var DisplayedLoggers = require('./models/displayed_loggers');
 
 var hostname = 'localhost';
 var port = 8082;
@@ -37,36 +38,50 @@ app.set('view engine', 'handlebars');
 
 app.get('/', function (req, res) {
 
+    DisplayedLoggers.find({
+        //"is_displayed": true
+    }).exec(function (err, enabled_loggers) {
+        TemperatureLogs.aggregate([
+            // Sort content by createdAt
+            { "$sort": { "createdAt": -1 } },
 
-    TemperatureLogs.aggregate([
-        // Sort content by createdAt
-        { "$sort": { "createdAt": -1 } },
-
-        // Group by logger_name and push all items, keeping first result
-        { "$group": {
-            "_id": "$logger_name",
-            "results": {
-                "$push": {
-                    "logger_display_name": "$logger_name",
-                    "humidity": "$humidity",
-                    "temperature": "$temperature_celsius",
-                    "heat_index": "$heat_index_celsius",
-                    "log_time": "$createdAt"
+            // Group by logger_name and push all items, keeping first result
+            { "$match": {
+                "logger_name": {
+                    "$in": enabled_loggers.map(function(element) {
+                        return element.logger_name;
+                    })
                 }
-            }
-        }},
-        { "$project": {
-            "results": { "$slice": [ "$results", 1 ] }
-        }}
-    ]).exec(function(err, data) {
+            }},
+            { "$group": {
+                "_id": "$logger_name",
+                "results": {
+                    "$push": {
+                        "logger_name": "$logger_name",
+                        "logger_display_name": "$logger_name",
+                        "humidity": "$humidity",
+                        "temperature": "$temperature_celsius",
+                        "heat_index": "$heat_index_celsius",
+                        "log_time": "$createdAt"
+                    }
+                }
+            }},
+            { "$project": {
+                "results": {
+                    "$slice": [ "$results", 1 ]
+                }
+            }}
+        ]).exec(function(err, data) {
 
-        var sensors_data = [].concat(data.map(function(element) {
-            return element.results[0];
-        }));
+            var sensors_data = [].concat(data.map(function(element) {
+                return element.results[0];
+            }));
 
-        res.render('main',
-            { sensors: sensors_data });
+            res.render('main',
+                { sensors: sensors_data });
+        });
     });
+
 });
 
 /*router.route('/')
@@ -95,9 +110,30 @@ router.route('/log')
             });
             res.end('Added the log with id: ' + id);
         });
-
     });
 
+
+router.route('/loggers')
+    .get(function (req, res, next) {
+        DisplayedLoggers.find({}).exec(function (err, dispLogger) {
+            if (err) throw err;
+            res.json(dispLogger);
+        });
+
+    })
+    .post(function (req, res, next) {
+        // The received log time should be in milliseconds since epoch
+        DisplayedLoggers.create(req.body, function (err, dispLogger) {
+            if (err) throw err;
+            console.log('New displayed loggers created!');
+            var id = dispLogger._id;
+
+            res.writeHead(200, {
+                'Content-Type': 'text/plain'
+            });
+            res.end('Added the logger with id: ' + id);
+        });
+    });
 app.use(morgan('dev'));
 
 app.use("/", router);
