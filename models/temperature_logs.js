@@ -7,10 +7,6 @@ var tlogSchema = new Schema({
         required: true,
         maxlength: 15
     },
-    log_time:  {
-        type: Date,
-        required: true
-    },
     humidity:  {
         type: Number,
         required: true
