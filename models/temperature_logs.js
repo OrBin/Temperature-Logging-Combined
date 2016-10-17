@@ -2,10 +2,10 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var tlogSchema = new Schema({
-    logger_name:  {
-        type: String,
+    logger:  {
+        type: Schema.Types.ObjectId,
         required: true,
-        maxlength: 15
+        ref: 'DisplayedLogger'
     },
     humidity:  {
         type: Number,

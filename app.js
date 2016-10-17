@@ -4,6 +4,8 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var exphbs  = require('express-handlebars');
 var moment = require('moment');
+var favicon = require('serve-favicon');
+var path = require('path');
 
 var TemperatureLogs = require('./models/temperature_logs');
 var DisplayedLoggers = require('./models/displayed_loggers');
@@ -36,29 +38,36 @@ var hbs = exphbs.create({
 app.engine('handlebars', hbs.engine);//({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 
+// Icon made by Freepik from www.flaticon.com
+app.use(favicon(path.join(__dirname, '/thermometer1.ico')));
+
 app.get('/', function (req, res) {
 
-    DisplayedLoggers.find({
+    /*DisplayedLoggers.find({
         //"is_displayed": true
-    }).exec(function (err, enabled_loggers) {
+    }).exec(function (err, enabled_loggers) {*/
         TemperatureLogs.aggregate([
             // Sort content by createdAt
             { "$sort": { "createdAt": -1 } },
 
             // Group by logger_name and push all items, keeping first result
-            { "$match": {
-                "logger_name": {
+            /*{ "$match": {
+                //"logger_name": {
+                //    "$in": enabled_loggers.map(function(element) {
+                //        return element.logger_name;
+                //    })
+                //}
+                "logger ": {
                     "$in": enabled_loggers.map(function(element) {
                         return element.logger_name;
                     })
                 }
-            }},
+            }},*/
             { "$group": {
-                "_id": "$logger_name",
+                "_id": "$logger",
                 "results": {
                     "$push": {
-                        "logger_name": "$logger_name",
-                        "logger_display_name": "$logger_name",
+                        "logger": "$logger",
                         "humidity": "$humidity",
                         "temperature": "$temperature_celsius",
                         "heat_index": "$heat_index_celsius",
@@ -82,17 +91,10 @@ app.get('/', function (req, res) {
         });
     });
 
-});
-
-/*router.route('/')
-    .get(function (req, res, next) {
-        res.render('home');
-    });*/
-
 router.route('/log')
     .get(function (req, res, next) {
         // TODO iterative fetching
-        TemperatureLogs.find({}).limit(10000).exec(function (err, tlog) {
+        TemperatureLogs.find({}).populate('logger').limit(10000).exec(function (err, tlog) {
             if (err) throw err;
             res.json(tlog);
         });
@@ -111,7 +113,6 @@ router.route('/log')
             res.end('Added the log with id: ' + id);
         });
     });
-
 
 router.route('/loggers')
     .get(function (req, res, next) {
@@ -134,6 +135,33 @@ router.route('/loggers')
             res.end('Added the logger with id: ' + id);
         });
     });
+
+router.route('/loggers/:loggerId')
+    .get(function (req, res, next) {
+        DisplayedLoggers.findById(req.params.loggerId, function (err, promo) {
+            if (err) throw err;
+            res.json(promo);
+        });
+    })
+    .put(function (req, res, next) {
+        DisplayedLoggers.findByIdAndUpdate(req.params.loggerId, {
+            $set: req.body
+        }, {
+            new: true
+        }, function (err, logger) {
+            if (err) throw err;
+            res.json(logger);
+        });
+    })
+    .delete(function (req, res, next) {
+        DisplayedLoggers.findByIdAndRemove(req.params.loggerId, function (err, resp)
+        {
+            if (err)
+                throw err;
+            res.json(resp);
+        });
+    });
+
 app.use(morgan('dev'));
 
 app.use("/", router);

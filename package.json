@@ -9,7 +9,8 @@
     "express-handlebars": "^3.0.0",
     "moment": "^2.15.1",
     "mongoose": "^4.6.3",
-    "morgan": "^1.7.0"
+    "morgan": "^1.7.0",
+    "serve-favicon": "^2.3.0"
   },
   "devDependencies": {},
   "scripts": {
