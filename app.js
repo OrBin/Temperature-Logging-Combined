@@ -10,7 +10,7 @@ var path = require('path');
 var TemperatureLogs = require('./models/temperature_logs');
 var DisplayedLoggers = require('./models/displayed_loggers');
 
-var hostname = 'localhost';
+var hostname = '10.100.102.13';
 var port = 8082;
 var mongoUrl = 'mongodb://localhost:27017/temperature_logs'
 
@@ -29,65 +29,67 @@ router.use(bodyParser.json());
 var hbs = exphbs.create({
     helpers: {
         formatDate: function(timestamp) {
-            return moment(timestamp).format("DD/MM/YY HH:mm");//new Date(timestamp).toString();
+            return moment(timestamp).format("DD/MM/YY HH:mm");
         }
     }
 
 });
 
-app.engine('handlebars', hbs.engine);//({defaultLayout: 'main'}));
+app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
+
+app.use(morgan('dev'));
 
 // Icon made by Freepik from www.flaticon.com
 app.use(favicon(path.join(__dirname, '/thermometer1.ico')));
 
 app.get('/', function (req, res) {
 
-    /*DisplayedLoggers.find({
-        //"is_displayed": true
-    }).exec(function (err, enabled_loggers) {*/
-        TemperatureLogs.aggregate([
-            // Sort content by createdAt
-            { "$sort": { "createdAt": -1 } },
+    TemperatureLogs.aggregate([
+        // Sort content by createdAt
+        { "$sort": {
+            "createdAt": -1
+        }},
 
-            // Group by logger_name and push all items, keeping first result
-            /*{ "$match": {
-                //"logger_name": {
-                //    "$in": enabled_loggers.map(function(element) {
-                //        return element.logger_name;
-                //    })
-                //}
-                "logger ": {
-                    "$in": enabled_loggers.map(function(element) {
-                        return element.logger_name;
-                    })
+        // Group by logger_name and push all items
+        { "$group": {
+            "_id": "$logger",
+            "results": {
+                "$push": {
+                    "logger": "$logger",
+                    "humidity": "$humidity",
+                    "temperature": "$temperature_celsius",
+                    "heat_index": "$heat_index_celsius",
+                    "log_time": "$createdAt"
                 }
-            }},*/
-            { "$group": {
-                "_id": "$logger",
-                "results": {
-                    "$push": {
-                        "logger": "$logger",
-                        "humidity": "$humidity",
-                        "temperature": "$temperature_celsius",
-                        "heat_index": "$heat_index_celsius",
-                        "log_time": "$createdAt"
-                    }
-                }
-            }},
-            { "$project": {
-                "results": {
-                    "$slice": [ "$results", 1 ]
-                }
-            }}
+            }
+        }},
+
+        // Keep only one result of each group
+        { "$project": {
+            "results": {
+                "$slice": [ "$results", 1 ]
+            }
+        }}
         ]).exec(function(err, data) {
 
-            var sensors_data = [].concat(data.map(function(element) {
+            var mappedData = [].concat(data.map(function(element) {
                 return element.results[0];
             }));
 
-            res.render('main',
-                { sensors: sensors_data });
+            DisplayedLoggers.populate(mappedData, {
+                path: "logger",
+                model: "DisplayedLogger"
+            }, function(err, populatedData) {
+
+                var displayableSensorsData = populatedData.filter(function(element) {
+                    return element.logger.is_displayed;
+                });
+
+                res.render('main', {
+                    sensors: displayableSensorsData
+                });
+            });
         });
     });
 
@@ -149,7 +151,8 @@ router.route('/loggers/:loggerId')
         }, {
             new: true
         }, function (err, logger) {
-            if (err) throw err;
+            if (err)
+                throw err;
             res.json(logger);
         });
     })
@@ -161,8 +164,6 @@ router.route('/loggers/:loggerId')
             res.json(resp);
         });
     });
-
-app.use(morgan('dev'));
 
 app.use("/", router);
 app.listen(port, hostname, function(){
