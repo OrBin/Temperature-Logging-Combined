@@ -10,7 +10,7 @@ var path = require('path');
 var TemperatureLogs = require('./models/temperature_logs');
 var DisplayedLoggers = require('./models/displayed_loggers');
 
-var hostname = '10.100.102.13';
+var hostname = 'localhost';
 var port = 8082;
 var mongoUrl = 'mongodb://localhost:27017/temperature_logs'
 
@@ -41,7 +41,7 @@ app.set('view engine', 'handlebars');
 app.use(morgan('dev'));
 
 // Icon made by Freepik from www.flaticon.com
-app.use(favicon(path.join(__dirname, '/thermometer1.ico')));
+//app.use(favicon(path.join(__dirname, '/thermometer1.ico')));
 
 app.get('/', function (req, res) {
 
@@ -73,6 +73,12 @@ app.get('/', function (req, res) {
         }}
         ]).exec(function(err, data) {
 
+            if (err)
+            {
+            	console.log(err.toString());
+                throw err;
+            }
+
             var mappedData = [].concat(data.map(function(element) {
                 return element.results[0];
             }));
@@ -82,7 +88,19 @@ app.get('/', function (req, res) {
                 model: "DisplayedLogger"
             }, function(err, populatedData) {
 
+            	if (err)
+            	{
+                	console.log(err.toString());
+                	throw err;
+            	}
+
                 var displayableSensorsData = populatedData.filter(function(element) {
+                    if (element.logger == null)
+		    {
+			console.log("populatedData=" + JSON.stringify(populatedData), null, '\t');
+			console.log("element=" + JSON.stringify(element), null, '\t');
+			throw "element.logger is null";
+		    }
                     return element.logger.is_displayed;
                 });
 
