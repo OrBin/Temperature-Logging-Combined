@@ -96,12 +96,20 @@ app.get('/', function (req, res) {
 
                 var displayableSensorsData = populatedData.filter(function(element) {
                     if (element.logger == null)
-		    {
-			console.log("populatedData=" + JSON.stringify(populatedData), null, '\t');
-			console.log("element=" + JSON.stringify(element), null, '\t');
-			throw "element.logger is null";
-		    }
+                    {
+                        console.log("populatedData=" + JSON.stringify(populatedData), null, '\t');
+                        console.log("element=" + JSON.stringify(element), null, '\t');
+                        throw "element.logger is null";
+                    }
                     return element.logger.is_displayed;
+                })
+                // Finally, sorting by logger_id, in order to keep a constant order of the displayed page (the data is originally sorted by createdAt)
+                .sort(function(a, b) {
+                    if(a.logger.logger_id < b.logger.logger_id)
+                        return -1;
+                    if(a.logger.logger_id > b.logger.logger_id)
+                        return 1;
+                    return 0;
                 });
 
                 res.render('main', {
