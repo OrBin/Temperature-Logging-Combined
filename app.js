@@ -41,7 +41,7 @@ app.set('view engine', 'handlebars');
 app.use(morgan('dev'));
 
 // Icon made by Freepik from www.flaticon.com
-//app.use(favicon(path.join(__dirname, '/thermometer1.ico')));
+app.use(favicon(path.join(__dirname, 'thermometer1.ico')));
 
 app.get('/', function (req, res) {
 
