@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
     <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
@@ -5,6 +6,20 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     <link href='https://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+    <script src="chroma.min.js"></script>
+    <script>
+        const MIN_TEMPERATURE = 10;
+        const MAX_TEMPERATURE = 45;
+        var colors = chroma.scale(['lightgreen', 'blue', 'orange', 'red', 'darkred']).colors(MAX_TEMPERATURE - MIN_TEMPERATURE + 1);
+
+        colorTemperatures = function () {
+            $.each($("[name=temperature]"), function (i, elem) {
+                elem.style.color = colors[elem.innerText.slice(0, -1) - MIN_TEMPERATURE];
+            });
+        };
+
+        $(document).ready(colorTemperatures);
+    </script>
 
     <title>Current temperature</title>
 </head>
@@ -22,7 +37,7 @@
                             <i class="fa fa-tint" aria-hidden="true"></i> {{{humidity}}}&#37;
                         </div>
                         <div>
-                            <span style="font-size: 150px;">{{{temperature}}}&deg;</span>
+                            <span name="temperature" style="font-size: 150px;">{{{temperature}}}&deg;</span>
                             <span style="font-size: 40px; margin-left: -20px;">C</span>
                         </div>
                         <div style="font-size: 20px; margin-top: -20px; margin-bottom: 10px;">
