@@ -72,8 +72,10 @@ app.get('/', function (req, res) {
             "results": {
                 "$slice": [ "$results", 1 ]
             }
-        }}
-        ]).exec(function(err, data) {
+        // A bad patch to prevent the error:
+        //	"MongoError: Sort exceeded memory limit of 104857600 bytes, but did not opt in to external sorting. Aborting operation. Pass allowDiskUse:true to opt in."
+        // This is very slow and should be replaced by a more efficient query.
+        }}]).allowDiskUse(true).exec(function(err, data) {
 
             if (err)
             {
