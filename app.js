@@ -32,7 +32,6 @@ var hbs = exphbs.create({
             return moment(timestamp).format("DD/MM/YY HH:mm");
         }
     }
-
 });
 
 app.engine('handlebars', hbs.engine);
@@ -47,86 +46,21 @@ app.use(express.static('public'));
 
 app.get('/', function (req, res) {
 
-    TemperatureLogs.aggregate([
-        // Sort content by createdAt
-        { "$sort": {
-            "createdAt": -1
-        }},
+    DisplayedLoggers.find({"is_displayed": true}).populate('latest_log')
+                    .sort({"_id": 1}).exec(function (err, results) {
 
-        // Group by logger_name and push all items
-        { "$group": {
-            "_id": "$logger",
-            "results": {
-                "$push": {
-                    "logger": "$logger",
-                    "humidity": "$humidity",
-                    "temperature": "$temperature_celsius",
-                    "heat_index": "$heat_index_celsius",
-                    "log_time": "$createdAt"
-                }
-            }
-        }},
-
-        // Keep only one result of each group
-        { "$project": {
-            "results": {
-                "$slice": [ "$results", 1 ]
-            }
-        // A bad patch to prevent the error:
-        //	"MongoError: Sort exceeded memory limit of 104857600 bytes, but did not opt in to external sorting. Aborting operation. Pass allowDiskUse:true to opt in."
-        // This is very slow and should be replaced by a more efficient query.
-        }}]).allowDiskUse(true).exec(function(err, data) {
-
-            if (err)
-            {
-            	console.log(err.toString());
-                throw err;
-            }
-
-            var mappedData = [].concat(data.map(function(element) {
-                return element.results[0];
-            }));
-
-            DisplayedLoggers.populate(mappedData, {
-                path: "logger",
-                model: "DisplayedLogger"
-            }, function(err, populatedData) {
-
-            	if (err)
-            	{
-                	console.log(err.toString());
-                	throw err;
-            	}
-
-                var displayableSensorsData = populatedData.filter(function(element) {
-                    if (element.logger == null)
-                    {
-                        console.log("populatedData=" + JSON.stringify(populatedData), null, '\t');
-                        console.log("element=" + JSON.stringify(element), null, '\t');
-                        throw "element.logger is null";
-                    }
-                    return element.logger.is_displayed;
-                })
-                // Finally, sorting by logger_id, in order to keep a constant order of the displayed page (the data is originally sorted by createdAt)
-                .sort(function(a, b) {
-                    if(a.logger.logger_id < b.logger.logger_id)
-                        return -1;
-                    if(a.logger.logger_id > b.logger.logger_id)
-                        return 1;
-                    return 0;
-                });
-
-                res.render('main', {
-                    sensors: displayableSensorsData
-                });
-            });
+        if (err) throw err;
+        res.render('main', {
+            sensors: results
         });
+
     });
+});
 
 router.route('/log')
     .get(function (req, res, next) {
         // TODO iterative fetching
-        TemperatureLogs.find({}).populate('logger').limit(10000).exec(function (err, tlog) {
+        TemperatureLogs.find({}).populate('logger').limit(100).exec(function (err, tlog) {
             if (err) throw err;
             res.json(tlog);
         });
@@ -137,12 +71,22 @@ router.route('/log')
         TemperatureLogs.create(req.body, function (err, tlog) {
             if (err) throw err;
             console.log('Temperature Log created!');
-            var id = tlog._id;
 
-            res.writeHead(200, {
-                'Content-Type': 'text/plain'
-            });
-            res.end('Added the log with id: ' + id);
+            DisplayedLoggers.findByIdAndUpdate(req.body.logger,
+                {
+                    $set: {
+                        "latest_log": tlog._id
+                    }
+                },
+                function (err, dlogger) {
+                    if (err) throw err;
+                    console.log('Logger updated!');
+
+                    res.writeHead(200, {
+                        'Content-Type': 'text/plain'
+                    });
+                    res.end('Added the log with id: ' + tlog._id);
+                });
         });
     });
 
