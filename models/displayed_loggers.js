@@ -16,6 +16,12 @@ var dispLoggerSchema = new Schema({
         type: Boolean,
         required: true,
         default: true
+    },
+    latest_log: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        default: null,
+        ref: 'TemperatureLog'
     }
 },
 {

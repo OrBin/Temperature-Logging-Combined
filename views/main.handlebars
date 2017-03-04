@@ -32,18 +32,18 @@
             <td class="box" style="width: 30%; padding-right: 3.5%; padding-left: 3.5%;">
                 <div class="well hero-unit">
                     <hgroup style="text-align: center">
-                        <div style="font-size: 20px">{{{logger.logger_display_name}}}:</div>
+                        <div style="font-size: 20px">{{{logger_display_name}}}:</div>
                         <div style="font-size: 20px; margin-top: 10px; margin-bottom: -30px;">
-                            <i class="fa fa-tint" aria-hidden="true"></i> {{{humidity}}}&#37;
+                            <i class="fa fa-tint" aria-hidden="true"></i> {{{latest_log.humidity}}}&#37;
                         </div>
                         <div>
-                            <span name="temperature" style="font-size: 150px;">{{{temperature}}}&deg;</span>
+                            <span name="temperature" style="font-size: 150px;">{{{latest_log.temperature_celsius}}}&deg;</span>
                             <span style="font-size: 40px; margin-left: -20px;">C</span>
                         </div>
                         <div style="font-size: 20px; margin-top: -20px; margin-bottom: 10px;">
-                            Feels like {{{heat_index}}}&degC
+                            Feels like {{{latest_log.heat_index_celsius}}}&degC
                         </div>
-                        <div style="font-size: 20px">Last update: {{formatDate log_time}}</div>
+                        <div style="font-size: 20px">Last update: {{formatDate latest_log.createdAt}}</div>
                     </hgroup>
                 </div>
             </td>
