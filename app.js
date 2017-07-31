@@ -30,7 +30,8 @@ var hbs = exphbs.create({
     helpers: {
         formatDate: function(timestamp) {
             return moment(timestamp).format("DD/MM/YY HH:mm");
-        }
+        },
+        round: Math.round
     }
 });
 
