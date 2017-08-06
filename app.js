@@ -48,7 +48,7 @@ app.use(express.static('public'));
 app.get('/', function (req, res) {
 
     DisplayedLoggers.find({"is_displayed": true}).populate('latest_log')
-                    .sort({"_id": 1}).exec(function (err, results) {
+        .sort({"_id": 1}).exec(function (err, results) {
 
         if (err) throw err;
         res.render('main', {
@@ -56,6 +56,25 @@ app.get('/', function (req, res) {
         });
 
     });
+});
+
+app.get('/latest', function (req, res) {
+
+    DisplayedLoggers.find({"is_displayed": true})
+        .populate('latest_log')
+        .sort({"logger_display_name": 1})
+        .exec(function (err, loggers_results) {
+
+            res.json(loggers_results.map((logger) => ({
+                "logger_display_name": logger.logger_display_name,
+                "updatedAt": logger.latest_log.updatedAt,
+                "humidity": logger.latest_log.humidity,
+                "heat_index_celsius": logger.latest_log.heat_index_celsius,
+                "temperature_celsius": logger.latest_log.temperature_celsius
+            })));
+
+        });
+
 });
 
 router.route('/log')
