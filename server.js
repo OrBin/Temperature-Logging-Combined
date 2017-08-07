@@ -44,8 +44,9 @@ app.use(morgan('dev'));
 app.use(favicon(path.join(__dirname, 'thermometer1.ico')));
 
 app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'dist')));
 
-app.get('/', function (req, res) {
+/*app.get('/', function (req, res) {
 
     DisplayedLoggers.find({"is_displayed": true}).populate('latest_log')
         .sort({"_id": 1}).exec(function (err, results) {
@@ -56,7 +57,7 @@ app.get('/', function (req, res) {
         });
 
     });
-});
+});*/
 
 app.get('/latest', function (req, res) {
 
