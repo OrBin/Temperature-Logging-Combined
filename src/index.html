@@ -10,8 +10,6 @@
   <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
-  <script src="chroma.min.js"></script>
-
   <title>Current temperature</title>
   <base href="/">
 
@@ -19,13 +17,12 @@
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 
-<body style="font-family: 'Oswald', sans-serif;">
-  <div style="height: 30px;"></div>
-  <table style="width: 100%">
+<body>
+  <table class="loggers-table">
     <tr>
-      <td class="sides" style="width: 14%"></td>
+      <td class="sides"></td>
       <td loggers>Loading...</td>
-      <td class="sides" style="width: 14%"></td>
+      <td class="sides"></td>
     </tr>
   </table>
 </body>

@@ -1,1 +1,43 @@
-/* You can add global styles to this file, and also import other style files */
+body {
+  font-family: 'Oswald', sans-serif;
+}
+
+.loggers-table {
+  margin-top: 30px;
+  width: 100%;
+}
+
+.sides {
+  width: 14%;
+}
+
+.logger-box {
+  width: 30%;
+  padding-right: 3.5%;
+  padding-left: 3.5%;
+  font-size: 20px;
+}
+
+.logger-well {
+  text-align: center;
+}
+
+.humidity {
+  margin-top: 10px;
+  margin-bottom: -30px;
+}
+
+.temperature-value {
+  font-size: 150px;
+}
+
+.temperature-unit {
+  font-size: 40px;
+  margin-left: -20px;
+}
+
+.heat-index {
+  margin-top: -20px;
+  margin-bottom: 10px;
+}
+
