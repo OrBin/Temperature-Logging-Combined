@@ -9,7 +9,9 @@
     </div>
 
     <div>
-      <span name="temperature" class="temperature-value">{{ logger.temperature_celsius | round }}&deg;</span>
+      <span name="temperature"
+            class="temperature-value"
+            [style.color]="getColorByTemperature(logger.temperature_celsius)">{{ logger.temperature_celsius | round }}&deg;</span>
       <span class="temperature-unit">C</span>
     </div>
 

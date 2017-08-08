@@ -46,19 +46,6 @@ app.use(morgan('dev'));
 app.use(express.static('public'));
 app.use(express.static(path.join(__dirname, 'dist')));
 
-/*app.get('/', function (req, res) {
-
-    DisplayedLoggers.find({"is_displayed": true}).populate('latest_log')
-        .sort({"_id": 1}).exec(function (err, results) {
-
-        if (err) throw err;
-        res.render('main', {
-            sensors: results
-        });
-
-    });
-});*/
-
 app.get('/latest', function (req, res) {
 
     DisplayedLoggers.find({"is_displayed": true})
