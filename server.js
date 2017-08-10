@@ -2,7 +2,6 @@ var express = require('express');
 var morgan = require('morgan');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
-var exphbs  = require('express-handlebars');
 var moment = require('moment');
 var favicon = require('serve-favicon');
 var path = require('path');
@@ -26,22 +25,7 @@ var router = express.Router();
 
 router.use(bodyParser.json());
 
-var hbs = exphbs.create({
-    helpers: {
-        formatDate: function(timestamp) {
-            return moment(timestamp).format("DD/MM/YY HH:mm");
-        },
-        round: Math.round
-    }
-});
-
-app.engine('handlebars', hbs.engine);
-app.set('view engine', 'handlebars');
-
 app.use(morgan('dev'));
-
-// Icon made by Freepik from www.flaticon.com
-//app.use(favicon(path.join(__dirname, 'thermometer1.ico')));
 
 app.use(express.static('public'));
 app.use(express.static(path.join(__dirname, 'dist')));
