@@ -6,8 +6,8 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start": "ng build && node server.js",
-    "run-server": "node server.js",
+    "run-server": "node ./server.js",
+    "start": "ng build && npm run run-server",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
