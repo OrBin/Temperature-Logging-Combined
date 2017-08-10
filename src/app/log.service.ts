@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Log } from './log';
-import { Headers, Http } from '@angular/http';
-import 'rxjs/add/operator/toPromise';
+import { Http,  } from '@angular/http';
+import { Observable } from "rxjs";
+import 'rxjs/Rx';
 
 @Injectable()
 export class LogService {
@@ -10,11 +11,9 @@ export class LogService {
 
   constructor(private http: Http) { }
 
-  getLatestLogs(): Promise<Log[]> {
+  getLatestLogs(): Observable<Log[]>{
     return this.http.get(this.logsUrl)
-                    .toPromise()
-                    .then(response => response.json() as Log[])
-                    .catch(this.handleError);
+                    .map(response => response.json() as Log[]);
   }
 
   private handleError(error: any): Promise<any> {
