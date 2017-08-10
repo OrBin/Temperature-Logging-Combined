@@ -3,7 +3,7 @@ import { Log } from './log';
 
 @Injectable()
 export class LogService {
-  getLatestLogs(): Log[] {
-    return [] as Log[];
+  getLatestLogs(): Promise<Log[]> {
+    return Promise.resolve([] as Log[]);
   }
 }

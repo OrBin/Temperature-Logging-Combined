@@ -21,7 +21,7 @@ export class LoggersComponent implements OnInit {
   constructor(private logService: LogService) { }
 
   ngOnInit() : void {
-    this.loggers = this.logService.getLatestLogs();
+    this.logService.getLatestLogs().then(logs => this.loggers = logs);
   }
 
   getColorByTemperature = (temperature) => COLOR_SCALE[Math.round(temperature) - MIN_TEMPERATURE];
