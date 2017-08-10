@@ -5,7 +5,9 @@ import * as chroma from 'chroma-js/chroma';
 import { Log } from './log';
 import { LogService } from './log.service';
 
-const UPDATE_INTERVAL_MILLIS = 3000;
+const UPDATE_INTERVAL_MILLIS = 15*1000;
+const LOG_TIMEOUT_MILLIS = 5*60*1000;
+
 const MIN_TEMPERATURE = 10;
 const MAX_TEMPERATURE = 45;
 const COLOR_SCALE = chroma.scale(['lightgreen', 'blue', 'orange', 'red', 'darkred'])
@@ -44,4 +46,6 @@ export class LoggersComponent implements OnInit, OnDestroy {
   }
 
   getColorByTemperature = (temperature) => COLOR_SCALE[Math.round(temperature) - MIN_TEMPERATURE];
+
+  hasTimedOut = (logTime) => ((new Date().valueOf() - new Date(logTime).valueOf()) > LOG_TIMEOUT_MILLIS);
 }

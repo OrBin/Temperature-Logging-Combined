@@ -9,8 +9,7 @@
     </div>
 
     <div>
-      <span name="temperature"
-            class="temperature-value"
+      <span class="temperature-value"
             [style.color]="getColorByTemperature(logger.temperature_celsius)">{{ logger.temperature_celsius | round }}&deg;</span>
       <span class="temperature-unit">C</span>
     </div>
@@ -19,7 +18,7 @@
       Feels like {{ logger.heat_index_celsius | round: 2 }}&deg;C
     </div>
 
-    <div>Last update: {{ logger.updatedAt | date: "dd/MM/yy HH:mm" }}</div>
+    <div [ngClass]="{'log-timed-out': hasTimedOut(logger.updatedAt)}">Last update: {{ logger.updatedAt | date: "dd/MM/yy HH:mm" }}</div>
 
   </div>
 

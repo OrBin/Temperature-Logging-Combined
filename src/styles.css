@@ -41,3 +41,6 @@ body {
   margin-bottom: 10px;
 }
 
+.log-timed-out {
+  color: #e80404;
+}
