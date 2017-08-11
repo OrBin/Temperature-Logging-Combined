@@ -7,7 +7,7 @@ import 'rxjs/Rx';
 @Injectable()
 export class LogService {
 
-  private logsUrl = '/latest';
+  private logsUrl = './latest';
 
   constructor(private http: Http) { }
 
