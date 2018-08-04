@@ -91,7 +91,6 @@ router.route('/loggers')
 
     })
     .post(function (req, res, next) {
-        // The received log time should be in milliseconds since epoch
         DisplayedLoggers.create(req.body, function (err, dispLogger) {
             if (err) throw err;
             console.log('New displayed loggers created!');

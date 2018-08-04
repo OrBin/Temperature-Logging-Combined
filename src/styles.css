@@ -2,19 +2,22 @@ body {
   font-family: 'Oswald', sans-serif;
 }
 
-.loggers-table {
+.main-loggers-table {
   margin-top: 30px;
   width: 100%;
 }
 
+.inner-loggers-table {
+  width: 100%;
+}
+
 .sides {
-  width: 14%;
+  width: 5%;
 }
 
 .logger-box {
-  width: 30%;
-  padding-right: 3.5%;
-  padding-left: 3.5%;
+  padding-right: 2%;
+  padding-left: 2%;
   font-size: 20px;
 }
 

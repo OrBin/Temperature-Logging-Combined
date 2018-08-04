@@ -5,7 +5,7 @@ import * as chroma from 'chroma-js/chroma';
 import { Log } from './log';
 import { LogService } from './log.service';
 
-const UPDATE_INTERVAL_MILLIS = 15*1000;
+const UPDATE_INTERVAL_MILLIS = 5*1000;
 const LOG_TIMEOUT_MILLIS = 5*60*1000;
 
 const MIN_TEMPERATURE = 10;
