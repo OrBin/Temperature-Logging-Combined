@@ -2,7 +2,6 @@ var express = require('express');
 var morgan = require('morgan');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
-var exphbs  = require('express-handlebars');
 var moment = require('moment');
 var favicon = require('serve-favicon');
 var path = require('path');
@@ -26,36 +25,28 @@ var router = express.Router();
 
 router.use(bodyParser.json());
 
-var hbs = exphbs.create({
-    helpers: {
-        formatDate: function(timestamp) {
-            return moment(timestamp).format("DD/MM/YY HH:mm");
-        },
-        round: Math.round
-    }
-});
-
-app.engine('handlebars', hbs.engine);
-app.set('view engine', 'handlebars');
-
 app.use(morgan('dev'));
 
-// Icon made by Freepik from www.flaticon.com
-app.use(favicon(path.join(__dirname, 'thermometer1.ico')));
-
 app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'dist')));
 
-app.get('/', function (req, res) {
+app.get('/latest', function (req, res) {
 
-    DisplayedLoggers.find({"is_displayed": true}).populate('latest_log')
-                    .sort({"_id": 1}).exec(function (err, results) {
+    DisplayedLoggers.find({"is_displayed": true})
+        .populate('latest_log')
+        .sort({"logger_display_name": 1})
+        .exec(function (err, loggers_results) {
 
-        if (err) throw err;
-        res.render('main', {
-            sensors: results
+            res.json(loggers_results.map((logger) => ({
+                "logger_display_name": logger.logger_display_name,
+                "updatedAt": logger.latest_log.updatedAt,
+                "humidity": logger.latest_log.humidity,
+                "heat_index_celsius": logger.latest_log.heat_index_celsius,
+                "temperature_celsius": logger.latest_log.temperature_celsius
+            })));
+
         });
 
-    });
 });
 
 router.route('/log')
@@ -100,7 +91,6 @@ router.route('/loggers')
 
     })
     .post(function (req, res, next) {
-        // The received log time should be in milliseconds since epoch
         DisplayedLoggers.create(req.body, function (err, dispLogger) {
             if (err) throw err;
             console.log('New displayed loggers created!');
