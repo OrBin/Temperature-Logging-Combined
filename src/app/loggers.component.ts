@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { RoundPipe } from 'angular-pipes/src/math/round.pipe';
 import { IntervalObservable } from "rxjs/observable/IntervalObservable";
 import * as chroma from 'chroma-js/chroma';
 import { Log } from './log';
