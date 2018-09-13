@@ -1,8 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { IntervalObservable } from "rxjs/observable/IntervalObservable";
+import { interval } from 'rxjs';
 import * as chroma from 'chroma-js/chroma';
 import { Log } from './log';
 import { LogService } from './log.service';
+import { first, takeWhile } from 'rxjs/operators';
 
 const UPDATE_INTERVAL_MILLIS = 5*1000;
 const LOG_TIMEOUT_MILLIS = 5*60*1000;
@@ -30,14 +31,14 @@ export class LoggersComponent implements OnInit, OnDestroy {
   ngOnInit() : void {
     // Getting data once on component initialization
     this.logService.getLatestLogs()
-                    .first()
+                    .pipe(first())
                     .subscribe(logs => this.loggers = logs);
 
     // Getting data in an interval
-    IntervalObservable.create(UPDATE_INTERVAL_MILLIS)
-                      .takeWhile(() => this.alive)
-                      .subscribe(() => this.logService.getLatestLogs()
-                                                      .subscribe(logs => this.loggers = logs));
+    interval(UPDATE_INTERVAL_MILLIS)
+        .pipe(takeWhile(() => this.alive))
+        .subscribe(() => this.logService.getLatestLogs()
+                                              .subscribe(logs => this.loggers = logs));
   }
 
   ngOnDestroy() : void {
