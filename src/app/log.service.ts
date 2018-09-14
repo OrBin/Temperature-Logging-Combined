@@ -1,8 +1,8 @@
 import { Injectable, isDevMode } from '@angular/core';
 import { Log } from './log';
-import { Http,  } from '@angular/http';
+import { Http } from '@angular/http';
 import { Observable } from "rxjs";
-import 'rxjs/Rx';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class LogService {
@@ -13,7 +13,7 @@ export class LogService {
 
   getLatestLogs(): Observable<Log[]>{
     return this.http.get(this.logsUrl)
-                    .map(response => response.json() as Log[]);
+                    .pipe(map(response => response.json() as Log[]));
   }
 
   private handleError(error: any): Promise<any> {
