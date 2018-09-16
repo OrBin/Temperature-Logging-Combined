@@ -25,9 +25,10 @@ body {
   text-align: center;
 }
 
-.humidity {
-  margin-top: 10px;
-  margin-bottom: -30px;
+.temperature {
+  margin-top: -25px;
+  margin-bottom: 10px;
+
 }
 
 .temperature-value {
@@ -46,4 +47,8 @@ body {
 
 .log-timed-out {
   color: #e80404;
+}
+
+.fa-tint {
+  padding-right: 2px;
 }

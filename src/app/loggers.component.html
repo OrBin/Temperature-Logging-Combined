@@ -5,17 +5,13 @@
 
         <div>{{ logger.logger_display_name }}:</div>
 
-        <div class="humidity">
-          <i class="fa fa-tint" aria-hidden="true"></i> {{ logger.humidity }}&#37;
-        </div>
-
-        <div [style.color]="getColorByTemperature(logger.temperature_celsius)">
+        <div  class="temperature" [style.color]="getColorByTemperature(logger.temperature_celsius)">
           <span class="temperature-value">{{ logger.temperature_celsius | round }}&deg;</span>
           <span class="temperature-unit">C</span>
         </div>
 
         <div class="heat-index">
-          Feels like {{ logger.heat_index_celsius | round: 2 }}&deg;C
+          <i class="fa fa-tint" aria-hidden="true"></i> {{ logger.humidity }}&#37;&nbsp;&nbsp;|&nbsp;&nbsp;Feels like {{ logger.heat_index_celsius | round }}&deg;C
         </div>
 
         <div [ngClass]="{'log-timed-out': hasTimedOut(logger.updatedAt)}">Last update: {{ logger.updatedAt | date: "dd/MM/yy HH:mm" }}</div>
