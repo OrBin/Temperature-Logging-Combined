@@ -1,12 +1,12 @@
+FROM node:10-alpine as builder
+WORKDIR /usr/src/app
+COPY package.json package.json
+RUN npm install
+COPY . .
+RUN npm run build
+
 FROM nginx:alpine
 MAINTAINER Or Bin "orbin50@gmail.com"
-
-COPY . /app
-WORKDIR /app
-
-RUN apk add nodejs
-RUN npm install && npm install -g @angular/cli
-RUN ng build --prod
-RUN mv dist/ /tmp/dist && rm -rf ./* && mv /tmp/dist/ dist
-
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY --from=builder /usr/src/app/dist /usr/share/nginx/html
+EXPOSE 80 443
+CMD [ "nginx", "-g", "daemon off;" ]
