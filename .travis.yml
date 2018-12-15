@@ -9,8 +9,6 @@ stages:
 
 jobs:
   include:
-    - stage: env
-      script: env
     - stage: build docker image
       script: docker build -t $DOCKER_IMAGE_NAME .
 
