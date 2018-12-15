@@ -3,7 +3,7 @@ services:
 
 stages:
   - name: build docker image
-    if: branch != master || type != push
+    if: (branch != master && tag IS blank) || type != push
   - name: deploy docker image
     if: (branch = master || tag IS present) && type = push
 
@@ -16,9 +16,11 @@ jobs:
       script:
         - docker build -t $DOCKER_IMAGE_NAME .
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-        - docker push $DOCKER_IMAGE_NAME
         - |
           if [ ! -z "$TRAVIS_TAG" ]; then
-            docker tag $DOCKER_IMAGE_NAME $DOCKER_IMAGE_NAME:$TRAVIS_TAG
-            docker push $DOCKER_IMAGE_NAME:$TRAVIS_TAG
+            export IMAGE_TAG=$TRAVIS_TAG
+          else
+            export IMAGE_TAG='latest'
           fi
+
+          docker push $DOCKER_IMAGE_NAME:$IMAGE_TAG
