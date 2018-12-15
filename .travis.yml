@@ -5,7 +5,7 @@ stages:
   - name: build docker image
     if: branch != master || type != push
   - name: deploy docker image
-    if: branch = master && type = push
+    if: (branch = master || tag IS present) && type = push
 
 jobs:
   include:
