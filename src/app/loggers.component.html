@@ -10,7 +10,8 @@
         </div>
 
         <div class="heat-index">
-          <i class="fa fa-tint" aria-hidden="true"></i> {{ logger.humidity | round }}&#37;&nbsp;&nbsp;|&nbsp;&nbsp;Feels like {{ logger.heat_index_celsius | round }}&deg;C
+          <i class="fa fa-tint" aria-hidden="true"></i>
+          {{ logger.humidity | round }}&#37;&nbsp;&nbsp;|&nbsp;&nbsp;Feels like {{ calculateHeatIndexCelsius(logger.temperature_celsius, logger.humidity) | round }}&deg;C
         </div>
 
         <div [ngClass]="{'log-timed-out': hasTimedOut(logger.updatedAt)}">Last update: {{ logger.updatedAt | date: "dd/MM/yy HH:mm" }}</div>

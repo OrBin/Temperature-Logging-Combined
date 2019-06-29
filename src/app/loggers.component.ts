@@ -45,7 +45,40 @@ export class LoggersComponent implements OnInit, OnDestroy {
     this.alive = false;
   }
 
-  getColorByTemperature = (temperature) => COLOR_SCALE[Math.round(temperature) - MIN_TEMPERATURE];
+  getColorByTemperature(temperature) {
+    return COLOR_SCALE[Math.round(temperature) - MIN_TEMPERATURE];
+  }
 
-  hasTimedOut = (logTime) => ((new Date().valueOf() - new Date(logTime).valueOf()) > LOG_TIMEOUT_MILLIS);
+  hasTimedOut(logTime) {
+    return (new Date().valueOf() - new Date(logTime).valueOf()) > LOG_TIMEOUT_MILLIS;
+  }
+
+  calculateHeatIndexCelsius(temperatureCelsius, humidity) {
+    /*
+     * Heat-Index calculator with celsius-grade
+     * Formulas are at https://en.wikipedia.org/wiki/Heat_index#Formula
+     * GregNau	2015
+     * https://github.com/gregnau/heat-index-calc
+     * Ported from Python by Or Bin, June 2019
+     */
+
+    const temperatureFahrenheit = ((temperatureCelsius * 9/5) + 32);
+
+    // Creating multiples of 'fahrenheit' & 'hum' values for the coefficients
+    const T2 = temperatureFahrenheit ** 2;
+    const H2 = humidity ** 2;
+
+    // Coefficients for the calculations
+    const C1 = [
+      -42.379, 2.04901523, 10.14333127, -0.22475541, -6.83783e-03, -5.481717e-02, 1.22874e-03, 8.5282e-04, -1.99e-06
+    ];
+
+    // Calculating heat-indexes with 3 different formula
+    const heatIndexFahrenheit = C1[0] + (C1[1] * temperatureFahrenheit) + (C1[2] * humidity) +
+      (C1[3] * temperatureFahrenheit * humidity) + (C1[4] * T2) + (C1[5] * H2) + (C1[6] * T2 * humidity) +
+      (C1[7] * temperatureFahrenheit * H2) + (C1[8] * T2 * H2)
+    const heatIndexCelsius = (heatIndexFahrenheit - 32) * 5/9;
+
+    return heatIndexCelsius;//.toFixed(2);
+  }
 }
