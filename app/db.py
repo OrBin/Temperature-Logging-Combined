@@ -1,13 +1,12 @@
+import os
 from contextlib import asynccontextmanager
 from typing import AsyncIterator
 from aiopg.sa import create_engine, SAConnection
 
 
-db_string = "postgres://postgres:mysecretpassword@172.17.0.2:5432/postgres"
-
-
 @asynccontextmanager
 async def connect_db() -> AsyncIterator[SAConnection]:
+    db_string = os.environ["DB_CONNECTION_STRING"]
     async with create_engine(db_string) as engine:
         async with engine.acquire() as connection:
             yield connection
