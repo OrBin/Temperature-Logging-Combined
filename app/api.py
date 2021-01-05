@@ -1,3 +1,4 @@
+from datetime import timedelta
 from typing import Optional
 from fastapi import HTTPException
 from psycopg2._psycopg import IntegrityError
@@ -111,8 +112,13 @@ async def get_latest_logs_per_logger():
                 ]
             )
             .distinct(Logger.id)
-            .where(Logger.is_displayed)
-            .order_by(Logger.id)  # Ordering by ID for consistent responses
+            .where(
+                sa.and_(
+                    Logger.is_displayed,
+                    Log.timestamp > (sa.func.now() - timedelta(weeks=1))
+                )
+            )
+            .order_by(Logger.id, Log.timestamp.desc())  # Ordering by ID for consistent responses
             .select_from(sa.join(Log, Logger))
         )
         return [dict(row) for row in await result.fetchall()]

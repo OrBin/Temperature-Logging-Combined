@@ -14,3 +14,5 @@ CREATE TABLE logs (
     timestamp TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     FOREIGN KEY (logger_id) REFERENCES loggers(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
+
+CREATE INDEX logs_timestamp_idx ON logs(timestamp);
