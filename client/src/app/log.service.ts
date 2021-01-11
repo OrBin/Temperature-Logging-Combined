@@ -7,7 +7,7 @@ import { map } from 'rxjs/operators';
 @Injectable()
 export class LogService {
 
-  private logsUrl = isDevMode() ? 'http://localhost:5000/latest' : './api/latest';
+  private logsUrl = isDevMode() ? 'http://localhost:8000/latest' : './api/latest';
 
   constructor(private http: Http) { }
 
