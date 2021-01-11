@@ -452,4 +452,4 @@ dmypy.json
 
 **/.idea/
 db_storage
-server/app/static
+server/static

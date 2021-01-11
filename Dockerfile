@@ -10,8 +10,8 @@ FROM tiangolo/uvicorn-gunicorn-fastapi:python3.8-slim
 MAINTAINER Or Bin "orbin50@gmail.com"
 
 WORKDIR /app
-COPY server/app/requirements.txt .
+COPY server/requirements.txt .
 RUN pip install -r ./requirements.txt
 EXPOSE 80
 COPY --from=client-builder /usr/src/app/dist ./static
-COPY server/app .
+COPY server/ .
