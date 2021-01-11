@@ -1,0 +1,21 @@
+<div class="inner-loggers-table container">
+    <div *ngFor="let logger of loggers" class="box logger-box">
+      <div class="well hero-unit logger-well">
+
+        <div>{{ logger.logger_display_name }}:</div>
+
+        <div  class="temperature" [style.color]="getColorByTemperature(logger.temperature_celsius)">
+          <span class="temperature-value">{{ logger.temperature_celsius | round }}&deg;</span>
+          <span class="temperature-unit">C</span>
+        </div>
+
+        <div class="heat-index">
+          <i class="fa fa-tint" aria-hidden="true"></i>
+          {{ logger.humidity | round }}&#37;&nbsp;&nbsp;|&nbsp;&nbsp;Feels like {{ calculateHeatIndexCelsius(logger.temperature_celsius, logger.humidity) | round }}&deg;C
+        </div>
+
+        <div [ngClass]="{'log-timed-out': hasTimedOut(logger.updatedAt)}">Last update: {{ logger.updatedAt | date: "dd/MM/yy HH:mm" }}</div>
+
+      </div>
+    </div>
+</div>

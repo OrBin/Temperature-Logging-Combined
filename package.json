@@ -1,0 +1,59 @@
+{
+  "name": "temperature-logging-front-end",
+  "version": "1.3.0",
+  "description": "Front end for temperature logging",
+  "author": "Or Bin",
+  "license": "MIT",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build --prod --build-optimizer",
+    "test": "ng test",
+    "lint": "ng lint",
+    "e2e": "ng e2e"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/common": "^6.1.7",
+    "@angular/compiler": "^6.1.7",
+    "@angular/core": "^6.1.7",
+    "@angular/forms": "^6.1.7",
+    "@angular/http": "^6.1.7",
+    "@angular/platform-browser": "^6.1.7",
+    "@angular/platform-browser-dynamic": "^6.1.7",
+    "@angular/router": "^6.1.7",
+    "angular-pipes": "^8.1.1",
+    "chroma-js": "^1.3.4",
+    "core-js": "^2.4.1",
+    "rxjs": "^6.3.2",
+    "zone.js": "^0.8.4"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "~0.8.0",
+    "@angular/cli": "6.2.1",
+    "@angular/compiler-cli": "^6.1.7",
+    "@types/jasmine": "2.8.8",
+    "@types/node": "~10.9.4",
+    "codelyzer": "~4.4.4",
+    "jasmine-core": "~3.2.1",
+    "jasmine-spec-reporter": "~4.2.1",
+    "karma": "~3.0.0",
+    "karma-chrome-launcher": "~2.2.0",
+    "karma-cli": "~1.0.1",
+    "karma-coverage-istanbul-reporter": "^2.0.4",
+    "karma-jasmine": "~1.1.0",
+    "karma-jasmine-html-reporter": "^1.3.1",
+    "protractor": "~5.4.1",
+    "ts-node": "~7.0.1",
+    "tslint": "~5.11.0",
+    "typescript": "^2.7.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OrBin/Temperature-Logging-Front-End"
+  },
+  "bugs": {
+    "url": "https://github.com/OrBin/Temperature-Logging-Front-End/issues"
+  },
+  "homepage": "https://github.com/OrBin/Temperature-Logging-Front-End#readme"
+}

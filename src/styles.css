@@ -1,0 +1,61 @@
+body {
+  font-family: 'Oswald', sans-serif;
+}
+
+.main-loggers-table {
+  margin-top: 30px;
+  width: 100%;
+}
+
+.inner-loggers-table {
+  width: 100%;
+}
+
+.sides {
+  width: 5%;
+}
+
+.logger-box {
+  padding-right: 2%;
+  padding-left: 2%;
+  font-size: 20px;
+}
+
+.logger-well {
+  text-align: center;
+}
+
+.temperature {
+  margin-top: -25px;
+  margin-bottom: 10px;
+
+}
+
+.temperature-value {
+  font-size: 150px;
+}
+
+.temperature-unit {
+  font-size: 40px;
+  margin-left: -20px;
+}
+
+.heat-index {
+  margin-top: -20px;
+  margin-bottom: 10px;
+}
+
+.log-timed-out {
+  color: #e80404;
+}
+
+.fa-tint {
+  padding-right: 2px;
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: space-between;
+}
