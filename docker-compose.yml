@@ -1,0 +1,21 @@
+version: "3"
+services:
+  postgres:
+    image: postgres:13-alpine
+    volumes:
+      - ./db_storage/:/var/lib/postgresql/data/
+    ports:
+      - "127.0.0.1:5432:5432"
+    environment:
+      POSTGRES_PASSWORD: password
+    shm_size: 1g
+
+  server:
+    image: orbin/temperature-logging-server
+    depends_on:
+      - "postgres"
+    ports:
+      - "127.0.0.1:8086:80"
+    environment:
+      DB_CONNECTION_STRING: "postgres://postgres:password@postgres:5432/postgres"
+    restart: on-failure
