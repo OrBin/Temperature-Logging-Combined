@@ -11,7 +11,7 @@ services:
     shm_size: 1g
 
   server:
-    image: orbin/temperature-logging-server
+    build: .
     depends_on:
       - "postgres"
     ports:
